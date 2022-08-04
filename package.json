@@ -16,7 +16,8 @@
     "xmlhttprequest": "^1.8.0"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js & node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
    "node": "^14.16.0"
