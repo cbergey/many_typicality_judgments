@@ -16,10 +16,10 @@
     "xmlhttprequest": "^1.8.0"
   },
   "scripts": {
-    "start": "npm server.js"
+    "start": "node server.js"
   },
   "engines": {
-   "node": "14.16.0"
+   "node": "^14.16.0"
   },
   "repository": {
     "type": "git",
