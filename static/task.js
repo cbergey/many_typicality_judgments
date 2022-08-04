@@ -1,4 +1,3 @@
-// Tangram comprehension task
 
 // to start at beginning
 var experiment;
@@ -192,7 +191,6 @@ class Experiment {
     this.data.push(jsonForRound);
   };
 
-  //Comprehension game
   study(trialnum) {
     var currTrial = this.trials[trialnum];
     this.trialnum = trialnum;
