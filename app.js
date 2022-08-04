@@ -11,7 +11,7 @@ const
     XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest,
     sendPostRequest = require('request').post;
 
-
+const port = process.env.PORT
 const researchers = ['A4SSYO0HDVD4E', 'A1BOIDKD33QSDK', 'A1MMCS8S8CTWKU','A1MMCS8S8CTWKV','A1MMCS8S8CTWKS', 'A1KXXBD1M6NBK5'];
 const blockResearcher = false;
 
@@ -81,7 +81,7 @@ io.on('connection', function (socket) {
       iterationname: 'testing'
     };
     sendPostRequest(
-      'http://localhost:6004/db/insert',
+      `http://localhost:${port}/db/insert`,
       { json: _.extend({}, data, dbInfo) },
       (error, res, body) => {
         if (!error && res.statusCode === 200) {
@@ -124,7 +124,7 @@ function checkPreviousParticipant (workerId, callback) {
     projection: {'_id': 1}
   };
   sendPostRequest(
-    'http://localhost:6004/db/exists',
+    `http://localhost:${port}/db/exists`,
     {json: postData},
     (error, res, body) => {
       try {
@@ -146,7 +146,7 @@ function checkPreviousParticipant (workerId, callback) {
 
 function initializeWithTrials(socket) {
   const gameid = UUID();
-  sendPostRequest('http://localhost:6004/db/getstims', {
+  sendPostRequest(`http://localhost:${port}/db/getstims`, {
     json: {
       dbname: 'typicality-judgments',
       colname: 'trial_set_stimuli',
