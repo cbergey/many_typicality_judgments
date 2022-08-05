@@ -11,8 +11,9 @@ const
     XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest,
     sendPostRequest = require('request').post;
 
-const port = process.env.PORT
-//const port = 6004;
+
+//const port = process.env.PORT
+const port = 6004;
 const researchers = ['A4SSYO0HDVD4E', 'A1BOIDKD33QSDK', 'A1MMCS8S8CTWKU','A1MMCS8S8CTWKV','A1MMCS8S8CTWKS', 'A1KXXBD1M6NBK5'];
 const blockResearcher = false;
 
@@ -21,8 +22,7 @@ if(argv.gameport) {
   gameport = argv.gameport;
   console.log('using port ' + gameport);
 } else {
-  gameport = port;
-  //gameport = 8887
+  gameport = 8887;
   console.log('no gameport specified: using 8887\nUse the --gameport flag to change');
 }
 
