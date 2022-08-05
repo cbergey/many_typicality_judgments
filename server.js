@@ -12,11 +12,11 @@ const app = express();
 const mongodb = require('mongodb');
 const ObjectID = mongodb.ObjectID;
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const port = 6004;
-//const port = process.env.PORT
-//const mongoURL = process.env.MONGODB_URI
-const mongoCreds = require('./auth.json');
-const mongoURL = `mongodb+srv://${mongoCreds.user}:${mongoCreds.password}@cluster0.vmf3v.mongodb.net/?retryWrites=true&w=majority/`;
+//const port = 6004;
+const port = process.env.PORT
+const mongoURL = process.env.MONGODB_URI
+//const mongoCreds = require('./auth.json');
+//const mongoURL = `mongodb+srv://${mongoCreds.user}:${mongoCreds.password}@cluster0.vmf3v.mongodb.net/?retryWrites=true&w=majority/`;
 const handlers = {};
 //const client = new MongoClient(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
