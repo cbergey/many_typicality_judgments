@@ -2,10 +2,11 @@
   "name": "mwert",
   "version": "1.0.0",
   "description": "server-side backend for behavioral experiments",
-    "main": "main.js",
-    "proxy": "http://localhost:6004",
+  "main": "main.js",
+  "proxy": "http://localhost:6004",
   "dependencies": {
     "axios": "^0.27.2",
+    "build": "^0.1.4",
     "colors": "^1.1.2",
     "cors": "^2.8.5",
     "create-react-app": "^5.0.1",

@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "axios": "^0.27.2",
+    "build": "^0.1.4",
     "colors": "^1.1.2",
     "cors": "^2.8.5",
     "create-react-app": "^5.0.1",
@@ -19,8 +20,8 @@
     "xmlhttprequest": "^1.8.0"
   },
   "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "frontend": "cd public && npm start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "frontend": "cd public && npm start",
     "api": "node server.js",
     "dev": "concurrently --kill-others-on-fail \"npm run api\" \"npm run frontend\"",
     "heroku-postbuild": "cd public && npm install && npm run build"
