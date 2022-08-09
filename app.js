@@ -27,18 +27,9 @@ if(argv.gameport) {
 
 let server;
 let io;
-try {
-  const privateKey  = fs.readFileSync('/etc/apache2/ssl/stanford-cogsci.org.key'),
-        certificate = fs.readFileSync('/etc/apache2/ssl/stanford-cogsci.org.crt'),
-        intermed    = fs.readFileSync('/etc/apache2/ssl/intermediate.crt'),
-        options     = {key: privateKey, cert: certificate, ca: intermed};
-  server            = require('https').createServer(options,app).listen(gameport),
-  io                = require('socket.io')(server);
-} catch (err) {
-  console.log("cannot find SSL certificates; falling back to http");
-  server = app.listen(gameport),
-  io     = require('socket.io')(server);
-}
+server = app.listen(gameport),
+io     = require('socket.io')(server);
+
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -91,7 +82,7 @@ io.on('connection', function (socket) {
         if (!error && res.statusCode === 200) {
           console.log(`sent data to store`);
         } else {
-	  console.log(`error sending data to store: ${error} ${body}`);
+          console.log(`error sending data to store: ${error} ${body}`);
         }
       }
     );

@@ -7,8 +7,9 @@ const fs = require('fs');
 const path = require('path');
 const sendPostRequest = require('request').post;
 const colors = require('colors/safe');
-
 const app = express();
+
+
 const mongodb = require('mongodb');
 const ObjectID = mongodb.ObjectID;
 const { MongoClient, ServerApiVersion } = require('mongodb');
@@ -19,6 +20,8 @@ const mongoURL = `mongodb+srv://${mongoCreds.user}:${mongoCreds.password}@cluste
 const handlers = {};
 //const client = new MongoClient(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+
+////  ***** helper functions ****** ////
 
 function makeMessage(text) {
   return `${colors.blue('[store]')} ${text}`;
@@ -70,6 +73,9 @@ function markAnnotation(collection, gameid, sketchid) {
   });
 };
 
+
+
+
 function serve() {
 
   mongoConnectWithRetry(2000, (connection) => {
@@ -91,7 +97,7 @@ function serve() {
 
       function checkCollectionForHits(collectionName, query, projection, callback) {
         const collection = database.collection(collectionName);
-	collection.findOne(query, {limit : 1}, (err, items) => {          
+        collection.findOne(query, {limit : 1}, (err, items) => {          
           callback(!_.isEmpty(items));
         }); 
       }
@@ -178,20 +184,20 @@ function serve() {
 
       // sort by number of times previously served up and take the first
       collection.findOne({}, {
-	sort: [['numGames', 1]],
+        sort: [['numGames', 1]],
         limit : 1
       }, (err, results) => {
         if(err) {
           console.log(err);
         } else {
-	  console.log(results);
-	  // Immediately mark as annotated so others won't get it too
-	  markAnnotation(collection, request.body.gameid, results['_id']);
+          console.log(results);
+          // Immediately mark as annotated so others won't get it too
+          markAnnotation(collection, request.body.gameid, results['_id']);
           response.send(results);
         }
       });
     });
-
+    
     app.listen(port, () => {
       log(`running at http://localhost:${port}`);
     });
@@ -200,4 +206,9 @@ function serve() {
 
 }
 
+
 serve();
+
+
+
+
