@@ -11,9 +11,8 @@ const
     XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest,
     sendPostRequest = require('request').post;
 
-
 //const port = process.env.PORT
-const port = 6004;
+const port = process.env.PORT || 6004;
 const researchers = ['A4SSYO0HDVD4E', 'A1BOIDKD33QSDK', 'A1MMCS8S8CTWKU','A1MMCS8S8CTWKV','A1MMCS8S8CTWKS', 'A1KXXBD1M6NBK5'];
 const blockResearcher = false;
 
@@ -41,11 +40,14 @@ try {
   io     = require('socket.io')(server);
 }
 
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html');
+});
+
 // serve stuff that the client requests
 app.get('/*', (req, res) => {
   const id = req.query.workerId;
   const isResearcher = _.includes(researchers, id);
-
   if(!id || id === 'undefined' || (isResearcher && !blockResearcher)) {
 
     // Let through if researcher, or in 'testing' mode

@@ -4,7 +4,10 @@
   "description": "server-side backend for behavioral experiments",
   "main": "index.js",
   "dependencies": {
+    "axios": "^0.27.2",
     "colors": "^1.1.2",
+    "cors": "^2.8.5",
+    "create-react-app": "^5.0.1",
     "express": "^4.18.1",
     "lodash": "^4.17.13",
     "minimist": "^1.2.0",
