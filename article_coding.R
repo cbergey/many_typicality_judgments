@@ -9,35 +9,53 @@ library(here)
 
 # We'll hand-check likely exceptions (words beginning with "o","u", and "h") and add those exceptions to 
 # a list, and then code the rest of the words according to the vowel--an consonant--a rule.
-adj_noun_pairs <- read_csv(here("data/pairs_for_turk.csv"))
-vowels <- c("a","e","i","o","u")
+adj_noun_pairs <- read_csv(here("data/all_cabnc_ldpParentandKid_conc_unique_pairs.csv")) %>%
+  select(adj_token, noun_token)
+vowels <- c("a","e","i") # "o" and "u" are sometimes exceptions to the vowel -> "an" rule
 likely_exceptions <- c("o","u","h") # exceptions to article rules 
 
-adj_noun_pairs %>% distinct(adj) %>% filter(substr(adj,1,1) %in% likely_exceptions) %>% View() 
-adj_noun_pairs %>% distinct(noun) %>% filter(substr(noun,1,1) %in% likely_exceptions) %>% View() 
+adj_exceptions <- adj_noun_pairs %>% distinct(adj_token) %>% filter(substr(adj_token,1,1) %in% likely_exceptions)
+noun_exceptions <- adj_noun_pairs %>% distinct(noun_token) %>% filter(substr(noun_token,1,1) %in% likely_exceptions)
 
-vowel_exception_words <- c("unique", "union")
-consonant_exception_words <- c("honest", "honorable")
+#write_csv(adj_exceptions, here("data/adj_exceptions.csv"))
+#write_csv(noun_exceptions, here("data/noun_exceptions.csv"))
 
-# In this case, we already have the noun articles hand-coded. If you didn't, you'd need to code the 
-# nouns for the mass vs. count distinction ("some rice" vs. "a house") and exclude the mass nouns
-# from being coded. Here, we're just grabbing the mass vs. count distinction from our hand-coding of noun articles.
-adj_noun_pairs <- adj_noun_pairs %>%
-  mutate(mass = if_else(is.na(article), TRUE, FALSE))
+# Here, code the articles of the exceptions in each csv, in a separate column called "noun_article" or "adj_article".
+# Then we'll read these codes back in.
 
-adj_noun_pairs <- adj_noun_pairs %>%
+coded_adj_exceptions <- read_csv(here("data/adj_exceptions.csv")) 
+coded_noun_exceptions <- read_csv(here("data/noun_exceptions.csv"))
+
+# We already coded whether the nouns are mass vs. count nouns ("some rice" vs. "a house"). 
+# We also made plural nouns singular, when applicable (unless they are conventionally plural, e.g., "scissors".)
+# Reading in noun data with singular forms and mass vs. count...
+nouns <- read_csv(here("data/all_cabnc_ldpParentandKid_conc_unique_NOUNs_coded.csv")) %>% select(noun_token, noun, mass)
+
+coded_pairs <- adj_noun_pairs %>%
+  left_join(nouns) %>%
+  left_join(coded_adj_exceptions) %>%
+  left_join(coded_noun_exceptions)
+
+coded_pairs <- coded_pairs %>%
   mutate(adj_article = case_when(mass == TRUE ~ "",
-                                 substr(adj,1,1) %in% vowels && adj %in% vowel_exception_words ~ "a",
-                                 substr(adj,1,1) %in% vowels ~ "an",
-                                 !(substr(adj,1,1) %in% vowels) && adj %in% consonant_exception_words ~ "an",
-                                 !(substr(adj,1,1) %in% vowels) ~ "a"))
+                                 !is.na(adj_article) ~ adj_article,
+                                 substr(adj_token,1,1) %in% vowels ~ "an",
+                                 !(substr(adj_token,1,1) %in% vowels) ~ "a"))
 
-# If we don't already have the noun articles coded, run this too ...
-adj_noun_pairs <- adj_noun_pairs %>%
+coded_pairs <- coded_pairs %>%
   mutate(article = case_when(mass == TRUE ~ "",
-                                 substr(noun,1,1) %in% vowels && noun %in% vowel_exception_words ~ "a",
-                                 substr(noun,1,1) %in% vowels ~ "an",
-                                 !(substr(noun,1,1) %in% vowels) && noun %in% consonant_exception_words ~ "an",
-                                 !(substr(noun,1,1) %in% vowels) ~ "a"))
+                             !is.na(noun_article) ~ noun_article,
+                             substr(noun_token,1,1) %in% vowels ~ "an",
+                             !(substr(noun_token,1,1) %in% vowels) ~ "a"))
 
-write_csv(adj_noun_pairs, here("data/pairs_for_turk.csv"))
+coded_pairs <- coded_pairs %>%
+  rename(adj = adj_token, noun_orig = noun_token) %>%
+  mutate(noun = if_else(is.na(noun), noun_orig, noun),
+         mass = if_else(is.na(mass), "FALSE", "TRUE"))
+
+clean_pairs <- coded_pairs %>%
+  select(adj, noun, adj_article, article, mass) %>%
+  distinct(adj, noun, adj_article, article, mass)
+
+write_csv(coded_pairs, here("data/ldp_cabnc_pairs_all_info.csv"))
+write_csv(clean_pairs, here("data/ldp_cabnc_pairs_for_turk.csv"))

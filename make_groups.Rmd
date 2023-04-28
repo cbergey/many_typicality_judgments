@@ -12,13 +12,14 @@ library(here)
 
 
 ```{r add-groups}
-data <- read_csv(here("data/pairs_for_turk.csv"))
+data <- read_csv(here("data/pairs_for_turk_raw.csv"))
+
+data <- slice(data, sample(1:n())) # shuffle pairs
 
 data <- data %>%
-  mutate(group = rep(row_number(), each=10, length.out = n()))
+  mutate(group = rep(row_number(), each=35, length.out = n()))
 ```
 
 ```{r output}
 write_csv(data, here("data/pairs_for_turk.csv"))
-
 ```
